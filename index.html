@@ -3,75 +3,469 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cargo Style Portfolio</title>
+<title>Jaan Van Rompaey - Portfolio</title>
 <style>
 /* =========================================
-           1. GLOBAL STYLES (The "Cargo" Aesthetic)
-           ========================================= */
+   1. GLOBAL STYLES 
+   ========================================= */
 :root {
---bg-color: #111111;       /* Deep black/gray background */
---text-color: #ffffff;     /* White text */
---text-muted: #888888;     /* Gray text for metadata */
---accent-gray: #444444;    /* Gray for placeholder boxes */
---border-color: #ffffff;   /* White borders */
---font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
---header-height: 80px;
-        }
+  --bg-color: #111111;
+  --text-color: #ffffff;
+  --text-muted: #888888;
+  --accent-gray: #444444;
+  --border-color: #ffffff;
+  --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --header-height: 80px;
+}
 
-
-* {
-box-sizing: border-box;
-        }
-
+* { box-sizing: border-box; }
 
 body {
-margin: 0;
-padding: 0;
-background-color: var(--bg-color);
-color: var(--text-color);
-font-family: var(--font-main);
-font-size: 14px;
-line-height: 1.4;
-overflow-x: hidden;
-        }
-
+  margin: 0; padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-x: hidden;
+}
 
 /* =========================================
-           2. HEADER (New)
-           ========================================= */
+   2. HEADER
+   ========================================= */
 .site-header {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: var(--header-height);
-background-color: var(--bg-color);
-border-bottom: 1px solid #222;
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0 40px;
-z-index: 100;
-        }
+  position: fixed; top: 0; left: 0; width: 100%;
+  height: var(--header-height);
+  background-color: var(--bg-color);
+  border-bottom: 1px solid #222;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 40px; z-index: 100;
+}
 
-
-.header-left {
-display: flex;
-align-items: center;
-gap: 20px;
-        }
-
+.header-left { display: flex; align-items: center; gap: 20px; }
 
 .logo-placeholder {
-width: 40px;
-height: 40px;
-background-color: var(--accent-gray);
-border: 1px solid var(--border-color);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 10px;
-color: var(--text-muted);
+  width: 80px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text-muted);
+}
+
+.portfolio-title { font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+
+.header-right { display: flex; gap: 20px; }
+
+.social-link {
+  color: var(--text-color); text-decoration: none;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+  transition: opacity 0.3s;
+}
+.social-link:hover { opacity: 0.7; }
+
+/* =========================================
+   3. LAYOUT (2 Independent Columns)
+   ========================================= */
+.layout-container {
+  display: grid; grid-template-columns: 1fr 500px;
+  height: 100vh; width: 100vw;
+  padding-top: var(--header-height);
+}
+
+.column {
+  padding: 40px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: #333 transparent;
+}
+.column::-webkit-scrollbar { width: 6px; }
+.column::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* =========================================
+   4. LEFT COLUMN (Projects)
+   ========================================= */
+.col-left { border-right: 1px solid #222; }
+
+.project-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 80px;
+}
+
+.project-block {
+  display: grid; grid-template-columns: 300px 1fr;
+  gap: 40px; margin-bottom: 80px;
+}
+
+.text-column {
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.project-title { font-size: 16px; font-weight: 500; text-transform: uppercase; }
+.project-date { font-size: 12px; color: var(--text-muted); }
+.project-credits { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+.project-description { font-size: 14px; line-height: 1.6; color: #ccc; }
+
+.image-column { display: flex; flex-direction: column; gap: 20px; }
+
+.project-main-image {
+  width: 100%; background-color: var(--accent-gray);
+  border: 5px solid var(--border-color);
+  position: relative; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+.image-label {
+  position: absolute; bottom: 10px; left: 10px;
+  font-size: 10px; color: white; opacity: 0.7;
+}
+
+.project-thumbnails { display: flex; gap: 10px; }
+
+.thumb-box {
+  width: 200px; background-color: var(--bg-color);
+  border: 5px solid var(--border-color);
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: 5px; font-size: 10px; color: var(--border-color);
+  cursor: pointer;
+}
+
+.project-main-image img, .thumb-box img {
+  width: 100%; height: auto; display: block;
+}
+
+/* =========================================
+   5. RIGHT COLUMN (Bio & Info)
+   ========================================= */
+.col-right { padding: 40px 30px; }
+.info-section { margin-bottom: 40px; }
+.section-label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 15px; color: var(--text-muted); display: block;
+}
+.info-list { list-style: none; padding: 0; }
+.info-item { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+.info-item:last-child { border-bottom: none; }
+.info-role { font-weight: 500; margin-bottom: 4px; display: block; }
+.info-detail { font-size: 12px; color: var(--text-muted); display: block; }
+
+/* =========================================
+   6. LIGHTBOX (Fixed & Synchronized)
+   ========================================= */
+.lightbox {
+  display: none; position: fixed; z-index: 2000;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.95);
+  justify-content: center; align-items: center;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.lightbox.show { opacity: 1; }
+
+.lightbox-content { max-width: 90%; max-height: 85vh; position: relative; }
+
+.lightbox-img { max-width: 100%; max-height: 85vh; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
+/* FIXED: Robust responsive wrapper that stays visible and centered */
+.lightbox-iframe-wrapper {
+  width: 80vw;
+  max-width: 1200px;
+  aspect-ratio: 16/9;
+  display: none;
+  border: 1px solid #333;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.lightbox-iframe {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+  background: #000;
+}
+
+.close-btn {
+  position: absolute; top: 20px; right: 30px;
+  color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001;
+}
+.prev, .next {
+  cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px;
+  margin-top: -50px; color: white; font-weight: bold; font-size: 24px;
+  transition: 0.3s; user-select: none;
+}
+.prev { left: 20px; } .next { right: 20px; }
+.prev:hover, .next:hover { color: #aaa; }
+
+/* =========================================
+   7. RESPONSIVE (Mobile)
+   ========================================= */
+@media (max-width: 900px) {
+  .layout-container { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .column { height: auto; overflow: visible; border: none; }
+  .project-block { grid-template-columns: 1fr; }
+  .lightbox-iframe-wrapper { width: 95vw; max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-left">
+    <img class="logo-placeholder" src="logo-white.png" alt="Installation">
+    <div class="portfolio-title">Jaan Van Rompaey - Portfolio</div>
+  </div>
+  <div class="header-right">
+    <a href="mailto:info@jaanvanrompaey.be" class="social-link">Email</a>
+    <a href="https://instagram.com/vanrompaeyjaan" class="social-link" target="_blank">Instagram</a>
+  </div>
+</header>
+
+<!-- LIGHTBOX (Synchronized HTML) -->
+<div id="lightbox" class="lightbox">
+  <span class="close-btn">&times;</span>
+  <a class="prev">&#10094;</a>
+  <a class="next">&#10095;</a>
+  <div class="lightbox-content">
+    <img class="lightbox-img" src="" alt="">
+    <!-- Responsive iframe wrapper -->
+    <div class="lightbox-iframe-wrapper">
+      <iframe class="lightbox-iframe" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout-container">
+  <!-- LEFT COLUMN: Projects -->
+  <aside class="column col-left">
+    <ul class="project-list">
+      
+      <!-- Project 1 -->
+      <li class="project-block">
+        <div class="text-column">
+          <div class="project-header">
+            <div class="project-title">E.V.I. (Experimental Video Interface)</div>
+            <div class="project-date">June 16, 2026</div>
+          </div>
+          <div class="project-credits">
+            <p>Tags: Intervention, Experimental, Hardware</p>
+            <p>As part of Studio Digital Native, Design Academy Eindhoven</p>
+            <p>Featured in the exhibition "Death of the Music Video(?)"</p>
+          </div>
+          <div class="project-description">
+            <p>[...] Experimental Video Interface takes the position of an intervention in the music video industry. The interface consists out of multiple components chained together in a modular setup. These are made to explore the ambiguity of electrical signals used to transfer sound and image. It takes inspiration from dub music, which uses a mixing board like an instrument and revolves around reworking existing music. It is made to bring the personality and emotions of music to a frictionless video editing industry. All components and research are open-sourced through the website found here.</p>
+          </div>
+        </div>
+        <div class="image-column">
+          <div class="project-main-image">
+            <img src="evi-installation-horizontal.jpeg" alt="Installation">
+          </div>
+          <div class="project-thumbnails">
+            <div class="thumb-box"><img src="evi-components.jpeg" alt="Thumb 3.1"></div>
+            <div class="thumb-box" data-vimeo-url="https://player.vimeo.com/video/1202499847">
+              <img src="evi-performance-thumbnail.png" alt="Video 1">
+            </div>
+            <div class="thumb-box" data-vimeo-url="https://player.vimeo.com/video/1202499880">
+              <img src="evi-example-thumbnail.png" alt="Video 2">
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <!-- Project 2 -->
+      <li class="project-block">
+        <div class="text-column">
+          <div class="project-header">
+            <div class="project-title">Project 02</div>
+            <div class="project-date">August 24 2042</div>
+          </div>
+          <div class="project-credits">
+            <p>Authors: Zeus Tutu & Tito Penrose</p>
+            <p>Edited by: Dusty Acres & Mitch Glitch</p>
+            <p>92pp, Hardback, 24 x 32 cm</p>
+            <p>ISBN: 978-82-697000-0-0</p>
+            <p>Printed by: Cargo® Press Ltd</p>
+          </div>
+          <div class="project-description">
+            <p>Vivamus sed sapien fermentum, fermentum metus ut, efficitur nunc. Pellentesque sit amet ex sed est dapibus vestibulum. Donec ornare urna metus, ut mollis risus dignissim in. Phasellus tristique sed leo et dignissim. Nam lobortis vitae leo at finibus. Aliquam eget efficitur lacus.</p>
+          </div>
+        </div>
+        <div class="image-column">
+          <div class="project-main-image">
+            <span class="image-label">Cargo® Placeholder Image · cargo.site</span>
+          </div>
+          <div class="project-thumbnails">
+            <div class="thumb-box">Cargo®<br>3.1</div>
+            <div class="thumb-box">Cargo®<br>3.2</div>
+            <div class="thumb-box">Cargo®<br>3.3</div>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+  </aside>
+
+  <!-- RIGHT COLUMN: Bio & Info -->
+  <aside class="column col-right">
+    <div class="info-section">
+      <span class="section-label">Profile (sample)</span>
+      <p style="font-size: 12px; line-height: 1.5;">
+        Vivamus sed sapien fermentum, fermentum metus ut, efficitur nunc. Pellentesque sit amet ex sed est dapibus vestibulum. Donec ornare urna metus, ut mollis risus dignissim in. Phasellus tristique sed leo et dignissim. Nam lobortis vitae leo at finibus. Aliquam eget efficitur lacus.
+      </p>
+      <p style="font-size: 12px; line-height: 1.5;">
+        Mauris leo erat, placerat quis semper eu, pulvinar in est. Nam eget justo quis ligula faucibus pretium ac nec mi. Aliquam lacus est, auctor sed arcu at, luctus condimentum lectus. Quisque vitae eleifend quam, vel suscipit nisl. Duis efficitur est nunc, eget efficitur felis porttitor in. Donec facilisis ultrices mattis. Quisque blandit ac enim non consectetur. Donec euismod magna turpis, ut blandit purus tempor sit amet. Suspendisse et hendrerit mi. Integer gravida, sapien quis ullamcorper auctor, metus eros aliquet ante, ut dictum ipsum tortor eget elit. Maecenas eu rutrum dui, ut faucibus lectus. Vivamus porttitor bibendum tortor.
+      </p>
+    </div>
+    <div class="info-section">
+      <span class="section-label">Education</span>
+      <ul class="info-list">
+        <li class="info-item">
+          <span class="info-role">Vestibulum Euismod Ultrices (Congue)</span>
+          <span class="info-detail">Suspendisse Aenean Lectus<br>2023</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">Vestibulum Euismod Ultrices (Tincidunt)</span>
+          <span class="info-detail">Aliquam Faucibus Tellus<br>(3 years)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="info-section">
+      <span class="section-label">Employment</span>
+      <ul class="info-list">
+        <li class="info-item">
+          <span class="info-role">Vestibulum Ultricies</span>
+          <span class="info-detail">Suspendisse Aenean Vestibulum<br>2023 - 2024</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">Pellentesque Habitant</span>
+          <span class="info-detail">'Morbi Tristique Senectus'<br>Nunc Euismod Faucibus,<br>Porta Libero<br>2024</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">Voluptat Ultricies</span>
+          <span class="info-detail">Curabitur Fringilla Ornare,<br>Duis Quis<br>(since 2020)</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">Accumsan Dui</span>
+          <span class="info-detail">'Integer Consequat'<br>Purus Euismod Facilisis, Pharetra Massa<br>2022</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">TEMPUS, TEMPUS, TEMPUS</span>
+          <span class="info-detail">Aliquam Faucibus Tellus, Euismod Ornare<br>Tincidunt Quam<br>2021</span>
+        </li>
+      </ul>
+    </div>
+    <div class="info-section">
+      <span class="section-label">Referrals</span>
+      <ul class="info-list">
+        <li class="info-item">
+          <span class="info-role">Tincidunt Nibh</span>
+          <span class="info-detail">Ultricies Vestibulum<br>Facilisis Ornare,<br>Porta Libero Universitas,<br>tincidunt.nibh@portolibero.edu.au<br>0491 570 006</span>
+        </li>
+        <li class="info-item">
+          <span class="info-role">Dictumst Gravida</span>
+          <span class="info-detail">Auctor Ligula / Founder<br>Aliquam Aliquam Congue, Felis<br>dictumst.gravida@gmail.com<br>0 491 570 457</span>
+        </li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<!-- JAVASCRIPT (Synchronized & Fixed) -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.querySelector('.lightbox-img');
+  const lightboxIframeWrapper = document.querySelector('.lightbox-iframe-wrapper');
+  const lightboxIframe = document.querySelector('.lightbox-iframe');
+  const closeBtn = document.querySelector('.close-btn');
+  const prevBtn = document.querySelector('.prev');
+  const nextBtn = document.querySelector('.next');
+
+  let currentIndex = 0;
+  let currentProjectMedia = [];
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightboxContent();
+    lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('show');
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+      lightboxIframe.src = ''; // Crucial: stops video & frees bandwidth
+    }, 300);
+  }
+
+  function updateLightboxContent() {
+    const container = currentProjectMedia[currentIndex];
+    const img = container.querySelector('img');
+    const vimeoUrl = container.dataset.vimeoUrl;
+
+    // Reset visibility
+    lightboxImg.style.display = 'none';
+    lightboxIframeWrapper.style.display = 'none';
+    lightboxIframe.src = '';
+
+    if (vimeoUrl) {
+      // Video Embed Mode
+      lightboxIframeWrapper.style.display = 'block';
+      const baseUrl = vimeoUrl;
+      const separator = baseUrl.includes('?') ? '&' : '?';
+      // Clean player UI + autoplay
+      lightboxIframe.src = baseUrl + separator + 'autoplay=1&title=0&byline=0&portrait=0';
+    } else if (img) {
+      // Image Fallback Mode
+      lightboxImg.style.display = 'block';
+      lightboxImg.src = img.src;
+    }
+  }
+
+  // Navigation
+  closeBtn.onclick = closeLightbox;
+  lightbox.onclick = (e) => {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+      closeLightbox();
+    }
+  };
+
+  prevBtn.onclick = (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + currentProjectMedia.length) % currentProjectMedia.length;
+    updateLightboxContent();
+  };
+
+  nextBtn.onclick = (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % currentProjectMedia.length;
+    updateLightboxContent();
+  };
+
+  // Keyboard Navigation
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    }
+  });
+
+  // Attach click events to thumbnails & main images
+  const projectBlocks = document.querySelectorAll('.project-block');
+  projectBlocks.forEach(block => {
+    const mediaContainers = block.querySelectorAll('.project-main-image, .thumb-box');
+    mediaContainers.forEach((container, index) => {
+      // Only attach if it's an image or has a Vimeo URL
+      if (container.querySelector('img') || container.dataset.vimeoUrl) {
+        container.onclick = () => {
+          currentProjectMedia = Array.from(mediaContainers);
+          openLightbox(index);
+        };
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
         }
 
 
