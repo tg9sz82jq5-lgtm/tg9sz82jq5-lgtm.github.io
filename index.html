@@ -379,6 +379,25 @@ box-shadow: 0 0 20px rgba(0,0,0,0.5);
 display: none; /* Hidden by default */
         }
 
+.lightbox-iframe {
+    max-width: 90%;
+    max-height: 85vh;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    display: none;
+}
+
+/* Scale iframes inside thumbnails to match your existing design */
+.thumb-box iframe {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16/9;
+    border: none;
+    pointer-events: none; /* Prevent iframe clicks from interfering with lightbox */
+}
+
+
 
 .close-btn {
 position: absolute;
@@ -511,10 +530,10 @@ grid-template-columns: 1fr; /* Stack text and images */
 </div>
 <!-- NEW: Video Thumbnail -->
 <div class="thumb-box">
-    <video src="evi-performance.mp4" poster="evi-performance-thumbnail.png" muted loop playsinline controls></video>
+    <iframe src="https://player.vimeo.com/video/1202499847" allowfullscreen></iframe>
 </div>
 <div class="thumb-box">
-    <video src="evi-example-video.mp4" poster="evi-example-thumbnail.png" muted loop playsinline controls></video>
+    <iframe src="https://player.vimeo.com/video/1202499880" allowfullscreen></iframe>
 </div>
 </div>
 </div>
@@ -649,123 +668,99 @@ grid-template-columns: 1fr; /* Stack text and images */
 <!-- JAVASCRIPT FOR LIGHTBOX -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.querySelector('.lightbox-img');
-const lightboxVideo = document.querySelector('.lightbox-video');
-const closeBtn = document.querySelector('.close-btn');
-const prevBtn = document.querySelector('.prev');
-const nextBtn = document.querySelector('.next');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.querySelector('.lightbox-img');
+    const lightboxIframe = document.querySelector('.lightbox-iframe');
+    const closeBtn = document.querySelector('.close-btn');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
 
+    let currentIndex = 0;
+    let currentProjectImages = [];
 
-let currentIndex = 0;
-let currentProjectImages = [];
+    function openLightbox(index) {
+        currentIndex = index;
+        updateLightboxContent();
+        lightbox.style.display = 'flex';
+        setTimeout(() => lightbox.classList.add('show'), 10);
+    }
 
+    function closeLightbox() {
+        lightbox.classList.remove('show');
+        setTimeout(() => {
+            lightbox.style.display = 'none';
+            lightboxIframe.src = ''; // Crucial: stops video & frees bandwidth
+        }, 300);
+    }
 
-// Function to open lightbox
-function openLightbox(index) {
-currentIndex = index;
-updateLightboxContent();
-lightbox.style.display = 'flex';
-// Small delay to allow display:flex to apply before opacity transition
-setTimeout(() => {
-lightbox.classList.add('show');
-                }, 10);
+    function updateLightboxContent() {
+        const container = currentProjectImages[currentIndex];
+        const img = container.querySelector('img');
+        const iframe = container.querySelector('iframe');
+
+        if (iframe) {
+            // Video Embed
+            lightboxImg.style.display = 'none';
+            lightboxIframe.style.display = 'block';
+            // Ensure autoplay works across platforms
+            const baseUrl = iframe.src;
+            const separator = baseUrl.includes('?') ? '&' : '?';
+            lightboxIframe.src = baseUrl + separator + 'autoplay=1';
+        } else if (img) {
+            // Image Fallback
+            lightboxIframe.style.display = 'none';
+            lightboxIframe.src = ''; // Pause previous video
+            lightboxImg.style.display = 'block';
+            lightboxImg.src = img.src;
+        }
+    }
+
+    // Navigation
+    closeBtn.onclick = closeLightbox;
+    lightbox.onclick = (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+            closeLightbox();
+        }
+    };
+
+    prevBtn.onclick = (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
+        updateLightboxContent();
+    };
+
+    nextBtn.onclick = (e) => {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % currentProjectImages.length;
+        updateLightboxContent();
+    };
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.style.display === 'flex') {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') prevBtn.click();
+            if (e.key === 'ArrowRight') nextBtn.click();
+        }
+    });
+
+    // Attach click events to thumbnails
+    const projectBlocks = document.querySelectorAll('.project-block');
+    projectBlocks.forEach(block => {
+        const mediaContainers = block.querySelectorAll('.project-main-image, .thumb-box');
+        mediaContainers.forEach((container, index) => {
+            const img = container.querySelector('img');
+            const iframe = container.querySelector('iframe');
+
+            if (img || iframe) {
+                container.onclick = () => {
+                    currentProjectImages = Array.from(mediaContainers);
+                    openLightbox(index);
+                };
             }
-
-
-// Function to close lightbox
-function closeLightbox() {
-lightbox.classList.remove('show');
-setTimeout(() => {
-lightbox.style.display = 'none';
-                }, 300); // Wait for transition
-            }
-
-
-// Function to update the content in the lightbox (Image or Video)
-function updateLightboxContent() {
-const container = currentProjectImages[currentIndex];
-const img = container.querySelector('img');
-const video = container.querySelector('video');
-
-
-if (video) {
-// If it's a video
-lightboxImg.style.display = 'none';
-lightboxVideo.style.display = 'block';
-lightboxVideo.src = video.src;
-lightboxVideo.poster = video.poster;
-lightboxVideo.play();
-                } else if (img) {
-// If it's an image
-lightboxVideo.style.display = 'none';
-lightboxVideo.pause();
-lightboxImg.style.display = 'block';
-lightboxImg.src = img.src;
-                } else {
-// Fallback if no media is found
-lightboxImg.style.display = 'none';
-lightboxVideo.style.display = 'none';
-                }
-            }
-
-
-// Event Listeners for Navigation
-closeBtn.onclick = closeLightbox;
-// Close when clicking outside the media
-lightbox.onclick = (e) => {
-if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
-closeLightbox();
-                }
-            };
-
-
-prevBtn.onclick = (e) => {
-e.stopPropagation(); // Prevent closing
-currentIndex = (currentIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
-updateLightboxContent();
-            };
-
-
-nextBtn.onclick = (e) => {
-e.stopPropagation(); // Prevent closing
-currentIndex = (currentIndex + 1) % currentProjectImages.length;
-updateLightboxContent();
-            };
-
-
-// Keyboard Navigation
-document.addEventListener('keydown', (e) => {
-if (lightbox.style.display === 'flex') {
-if (e.key === 'Escape') closeLightbox();
-if (e.key === 'ArrowLeft') prevBtn.click();
-if (e.key === 'ArrowRight') nextBtn.click();
-                }
-            });
-
-
-// Main Logic: Attach click events to project images/videos
-const projectBlocks = document.querySelectorAll('.project-block');
-
-
-projectBlocks.forEach(block => {
-// Get all image/video containers within this block
-const mediaContainers = block.querySelectorAll('.project-main-image, .thumb-box');
-mediaContainers.forEach((container, index) => {
-// Check if there is an img or video tag inside
-const img = container.querySelector('img');
-const video = container.querySelector('video');
-
-
-if (img || video) {
-container.onclick = () => {
-currentProjectImages = Array.from(mediaContainers); // Store list for this project
-openLightbox(index);
-                        };
-                    }
-                });
-            });
         });
+    });
+});
 </script>
 
 
