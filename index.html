@@ -3,596 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>Cargo Style Portfolio</title>
     <style>
         /* =========================================
-           EDIT YOUR COLORS HERE (THE CONSTANTS)
+           1. GLOBAL STYLES (The "Cargo" Aesthetic)
            ========================================= */
         :root {
-            --bg-color: #1a1a1a;       /* Main background color */
-            --text-color: #e0e0e0;     /* Main text color */
-            --accent-color: #4caf50;   /* Links, buttons, highlights */
-            --card-bg: #2d2d2d;        /* Background for images/cards */
-            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --bg-color: #111111;       /* Deep black/gray background */
+            --text-color: #ffffff;     /* White text */
+            --text-muted: #888888;     /* Gray text for metadata */
+            --accent-gray: #444444;    /* Gray for placeholder boxes */
+            --border-color: #ffffff;   /* White borders */
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* =========================================
-           GLOBAL STYLES
-           ========================================= */
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
+            margin: 0;
+            padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: var(--font-main);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        h1, h2, h3 {
-            color: var(--accent-color);
-            margin-bottom: 15px;
-        }
-
-        a {
-            color: var(--accent-color);
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        a:hover {
-            opacity: 0.8;
+            font-size: 14px; /* Cargo uses small, compact text */
+            line-height: 1.4;
+            overflow: hidden; /* Hide body scroll, we scroll columns */
         }
 
         /* =========================================
-           LAYOUT (TWO COLUMNS)
+           2. LAYOUT (3 Independent Columns)
            ========================================= */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .layout-container {
             display: grid;
-            grid-template-columns: 1fr 2fr; /* Left col takes 1 part, Right col takes 2 parts */
-            gap: 30px;
+            grid-template-columns: 280px 1fr 320px; /* Left | Middle | Right */
+            height: 100vh; /* Full viewport height */
+            width: 100vw;
+        }
+
+        /* Common Column Styles */
+        .column {
+            padding: 20px;
+            overflow-y: auto; /* Independent scrolling */
+            scrollbar-width: thin; /* Firefox scrollbar styling */
+            scrollbar-color: #333 transparent;
+        }
+
+        /* Custom Scrollbar for Webkit (Chrome/Safari) */
+        .column::-webkit-scrollbar {
+            width: 6px;
+        }
+        .column::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        /* Left Column: Navigation & Metadata */
+        .col-left {
+            border-right: 1px solid #222;
+        }
+
+        /* Middle Column: Main Content */
+        .col-center {
+            padding: 0; /* Full bleed images */
+        }
+
+        /* Right Column: Bio & Info */
+        .col-right {
+            border-left: 1px solid #222;
         }
 
         /* =========================================
-           LEFT COLUMN: IMAGE GALLERY
+           3. LEFT COLUMN STYLES
            ========================================= */
-        .gallery {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            position: sticky; /* Keeps images visible while scrolling text */
-            top: 20px;
-            max-height: 90vh; /* Prevents images from going off screen */
-            overflow-y: auto; /* Allows scrolling images if there are too many */
-            padding-right: 10px;
+        .brand {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            color: var(--text-muted);
         }
 
-        .project-image {
+        .project-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .project-item {
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .project-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .metadata-footer {
+            margin-top: 60px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* =========================================
+           4. MIDDLE COLUMN STYLES (Images & Text)
+           ========================================= */
+        .main-content {
+            padding: 40px 60px;
+        }
+
+        /* The "Cargo" Placeholder Image Style */
+        .cargo-image-placeholder {
             width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-            background-color: var(--card-bg);
-            border: 1px solid #333;
-            transition: transform 0.2s;
-        }
-
-        .project-image:hover {
-            transform: scale(1.02);
-        }
-
-        /* Custom scrollbar for gallery */
-        .gallery::-webkit-scrollbar {
-            width: 8px;
-        }
-        .gallery::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        .gallery::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 4px;
-        }
-
-        /* =========================================
-           RIGHT COLUMN: SCROLLABLE TEXT
-           ========================================= */
-        .content {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            /* Makes the text scrollable independently if needed, 
-               though usually you want the whole page to scroll. 
-               Here we just style the content block nicely. */
-        }
-
-        .content p {
+            height: 60vh; /* Large image */
+            background-color: var(--accent-gray);
+            border: 1px solid var(--border-color);
+            position: relative;
             margin-bottom: 20px;
-            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .tag {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-right: 5px;
-            margin-bottom: 10px;
+        /* The Diagonal Line Effect */
+        .cargo-image-placeholder::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, transparent 49.5%, white 49.5%, white 50.5%, transparent 50.5%);
+            opacity: 0.3;
+        }
+
+        /* Thumbnail Row */
+        .thumbnail-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .thumb {
+            width: 100px;
+            height: 140px;
+            background-color: var(--accent-gray);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-end;
+            padding: 5px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Text Block */
+        .content-text {
+            max-width: 600px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
         }
 
         /* =========================================
-           RESPONSIVE DESIGN (MOBILE)
+           5. RIGHT COLUMN STYLES (Lists & Bio)
            ========================================= */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr; /* Stack columns on mobile */
-            }
+        .info-section {
+            margin-bottom: 40px;
+        }
 
-            .gallery {
-                position: static; /* Remove sticky on mobile */
-                max-height: none;
-                flex-direction: row; /* Horizontal scroll on mobile */
-                overflow-x: auto;
-                padding-right: 0;
-            }
+        .section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            display: block;
+        }
 
-            .project-image {
-                min-width: 250px; /* Make images scrollable horizontally */
-                height: 200px;
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333; /* Separator line */
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-role {
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .info-detail {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        /* =========================================
+           6. RESPONSIVE (Mobile)
+           ========================================= */
+        @media (max-width: 900px) {
+            .layout-container {
+                grid-template-columns: 1fr; /* Stack columns */
+                height: auto;
+                overflow: visible;
+            }
+            .column {
+                height: auto;
+                overflow: visible;
+                border: none;
+            }
+            .cargo-image-placeholder {
+                height: 40vh;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="layout-container">
         
-        <!-- LEFT COLUMN: PICTURES -->
-        <aside class="gallery">
-            <!-- Replace src="" with your actual image paths (e.g., images/project1.jpg) -->
-            <img src="https://via.placeholder.com/600x400/333333/4caf50?text=Project+Preview+1" alt="Project 1" class="project-image">
-            <img src="https://via.placeholder.com/600x400/333333/4caf50?text=Project+Preview+2" alt="Project 2" class="project-image">
-            <img src="https://via.placeholder.com/600x400/333333/4caf50?text=Project+Preview+3" alt="Project 3" class="project-image">
-            <img src="https://via.placeholder.com/600x400/333333/4caf50?text=Project+Preview+4" alt="Project 4" class="project-image">
+        <!-- LEFT COLUMN: Navigation & Metadata -->
+        <aside class="column col-left">
+            <div class="brand">Cargo® Demo</div>
+            
+            <!-- Edit Project List Here -->
+            <ul class="project-list">
+                <li class="project-item">
+                    <div class="project-title">Project 03</div>
+                    <div class="project-date">August 24 2042</div>
+                </li>
+                <li class="project-item">
+                    <div class="project-title">Project 02</div>
+                    <div class="project-date">August 24 2042</div>
+                </li>
+                <li class="project-item">
+                    <div class="project-title">Project 01</div>
+                    <div class="project-date">August 24 2042</div>
+                </li>
+            </ul>
+
+            <!-- Edit Footer Metadata Here -->
+            <div class="metadata-footer">
+                <p>Authors: Zeus Tutu & Tito Penrose</p>
+                <p>Edited by: Dusty Acres & Mitch Glitch</p>
+                <p>92pp, Hardback, 24 x 32 cm</p>
+                <p>ISBN: 978-82-697000-0-0</p>
+                <p>Printed by: Cargo® Press Ltd</p>
+            </div>
         </aside>
 
-        <!-- RIGHT COLUMN: TEXT -->
-        <main class="content">
-            <h1>Project Title Goes Here</h1>
-            
-            <div>
-                <span class="tag">Design</span>
-                <span class="tag">Development</span>
-                <span class="tag">UI/UX</span>
+        <!-- MIDDLE COLUMN: Main Content -->
+        <main class="column col-center">
+            <div class="main-content">
+                
+                <!-- Large Placeholder Image -->
+                <!-- Replace this div with your <img src="..."> tag when ready -->
+                <div class="cargo-image-placeholder">
+                    <span style="position:absolute; bottom: 10px; left: 10px; font-size: 10px; color: white;">Cargo® Placeholder Image · cargo.site</span>
+                </div>
+
+                <!-- Thumbnail Row -->
+                <div class="thumbnail-row">
+                    <div class="thumb">Cargo®<br>3.1</div>
+                    <div class="thumb">Cargo®<br>3.2</div>
+                    <div class="thumb">Cargo®<br>3.3</div>
+                </div>
+
+                <!-- Text Content -->
+                <div class="content-text">
+                    <!-- EDIT TEXT HERE -->
+                    <p>[...] Vestibulum et dignissim magna. Nullam at ultrices felis. Suspendisse facilisis sagittis sem sit amet tempor. Nam sit amet nibh et enim laoreet porta sit amet vel purus. Maecenas augue velit, feugiat in maximus id, auctor vel ex. Integer placerat lectus mi, vel molestie neque dictum at. Vivamus sed sapien: fermentum, fermentum, metus ut, efficitur nunc. Pellentesque sit amet ex sed est dapibus vestibulum.</p>
+                </div>
             </div>
-
-            <p>
-                <strong>About this project:</strong> This is where you describe the core concept of your design. 
-                Since this column is on the right, you can write a longer, detailed explanation here while 
-                the user scrolls through the images on the left.
-            </p>
-
-            <h3>Key Features</h3>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. 
-                Cras vehicula, mi eget laoreet venenatis, dui tortor hendrerit leo, nec volutpat risus sem vitae eros.
-            </p>
-
-            <h3>My Role & Process</h3>
-            <p>
-                Explain what you did. Did you design the UI? Did you code the backend? 
-                Use this space to highlight your specific skills. 
-                Nullam auctor, nisl eget ultricies tincidunt, mauris nulla tincidunt nisi, 
-                nec volutpat risus sem vitae eros.
-            </p>
-
-            <h3>Technical Stack</h3>
-            <p>
-                Mention the tools you used: HTML5, CSS3, JavaScript, Figma, etc.
-            </p>
-            
-            <p>
-                <em>Tip: Keep your sentences concise. Since the images are on the left, 
-                try to balance the text so it doesn't look too crowded.</em>
-            </p>
         </main>
 
+        <!-- RIGHT COLUMN: Bio & Info -->
+        <aside class="column col-right">
+            
+            <!-- Profile Section -->
+            <div class="info-section">
+                <span class="section-label">Profile (sample)</span>
+                <p style="font-size: 12px; line-height: 1.5;">
+                    Vivamus sed sapien fermentum, fermentum metus ut, efficitur nunc. Pellentesque sit amet ex sed est dapibus vestibulum. Donec ornare urna metus, ut mollis risus dignissim in. Phasellus tristique sed leo et dignissim. Nam lobortis vitae leo at finibus. Aliquam eget efficitur lacus.
+                </p>
+                <p style="font-size: 12px; line-height: 1.5;">
+                    Mauris leo erat, placerat quis semper eu, pulvinar in est. Nam eget justo quis ligula faucibus pretium ac nec mi. Aliquam lacus est, auctor sed arcu at, luctus condimentum lectus. Quisque vitae eleifend quam, vel suscipit nisl. Duis efficitur est nunc, eget efficitur felis porttitor in. Donec facilisis ultrices mattis. Quisque blandit ac enim non consectetur. Donec euismod magna turpis, ut blandit purus tempor sit amet. Suspendisse et hendrerit mi. Integer gravida, sapien quis ullamcorper auctor, metus eros aliquet ante, ut dictum ipsum tortor eget elit. Maecenas eu rutrum dui, ut faucibus lectus. Vivamus porttitor bibendum tortor.
+                </p>
+            </div>
+
+            <!-- Education Section -->
+            <div class="info-section">
+                <span class="section-label">Education</span>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-role">Vestibulum Euismod Ultrices (Congue)</span>
+                        <span class="info-detail">Suspendisse Aenean Lectus<br>2023</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">Vestibulum Euismod Ultrices (Tincidunt)</span>
+                        <span class="info-detail">Aliquam Faucibus Tellus<br>(3 years)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Employment Section -->
+            <div class="info-section">
+                <span class="section-label">Employment</span>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-role">Vestibulum Ultricies</span>
+                        <span class="info-detail">Suspendisse Aenean Vestibulum<br>2023 - 2024</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">Pellentesque Habitant</span>
+                        <span class="info-detail">'Morbi Tristique Senectus'<br>Nunc Euismod Faucibus,<br>Porta Libero<br>2024</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">Voluptat Ultricies</span>
+                        <span class="info-detail">Curabitur Fringilla Ornare,<br>Duis Quis<br>(since 2020)</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">Accumsan Dui</span>
+                        <span class="info-detail">'Integer Consequat'<br>Purus Euismod Facilisis, Pharetra Massa<br>2022</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">TEMPUS, TEMPUS, TEMPUS</span>
+                        <span class="info-detail">Aliquam Faucibus Tellus, Euismod Ornare<br>Tincidunt Quam<br>2021</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Referrals Section -->
+            <div class="info-section">
+                <span class="section-label">Referrals</span>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <span class="info-role">Tincidunt Nibh</span>
+                        <span class="info-detail">Ultricies Vestibulum<br>Facilisis Ornare,<br>Porta Libero Universitas,<br>tincidunt.nibh@portolibero.edu.au<br>0491 570 006</span>
+                    </li>
+                    <li class="info-item">
+                        <span class="info-role">Dictumst Gravida</span>
+                        <span class="info-detail">Auctor Ligula / Founder<br>Aliquam Aliquam Congue, Felis<br>dictumst.gravida@gmail.com<br>0 491 570 457</span>
+                    </li>
+                </ul>
+            </div>
+
+        </aside>
+
     </div>
 
-</body>
-</html>
-  .plan-section-line{stroke:var(--accent);stroke-width:.4;stroke-dasharray:2,2;shape-rendering:geometricPrecision}
-  .plan-corner{fill:none;stroke:var(--muted);stroke-width:.3;shape-rendering:geometricPrecision}
-  .plan-fill-sup{fill:var(--accent);stroke:none;shape-rendering:geometricPrecision}
-  .plan-leg-brace{stroke:var(--leg-color);stroke-width:.4;shape-rendering:geometricPrecision}
-  .plan-leg-cap{fill:#e0e0dc;stroke:var(--text);stroke-width:.5;shape-rendering:geometricPrecision}
-  .plan-seat{fill:var(--seat-fill);stroke:var(--text);stroke-width:.8;shape-rendering:geometricPrecision}
-  .plan-wood-grain{stroke:#d0d0cc;stroke-width:.3;shape-rendering:geometricPrecision;fill:none}
-
-  @media(max-width:700px){
-    .app{grid-template-columns:1fr;grid-template-rows:1fr 1fr 1fr 1fr}
-  }
-</style>
-</head>
-<body>
-<div class="app">
-
-  <!-- Top-Left: Controls -->
-  <div class="quarter sidebar-quarter">
-    <div class="brand"><span class="name" style="font-size:50px ;">Connecting Heritage</span>Bench Configurator</div>
-
-    <div>
-      <div class="sec">Width</div>
-      <div class="width-row">
-        <span class="num" id="widthNum">100</span>
-        <span class="unit">cm</span>
-      </div>
-      <div class="slider-wrap">
-        <input type="range" id="widthSlider" min="50" max="400" step="10" value="100">
-      </div>
-      <div class="slider-limits"><span>50 cm</span><span>400 cm</span></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <div class="sec">Dimensions</div>
-      <div class="sum-row"><span class="lbl">Length</span><span class="val" id="sW">100 cm</span></div>
-      <div class="sum-row"><span class="lbl">Depth</span><span class="val" id="sD">40 cm</span></div>
-      <div class="sum-row"><span class="lbl">Height</span><span class="val" id="sH">45 cm</span></div>
-      <div class="sum-row"><span class="lbl">Seats</span><span class="val" id="sS">1</span></div>
-      <div class="sum-total"><span>Total</span><span id="sT">100 cm</span></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <div class="sec">Spacing</div>
-      <div class="sum-row"><span class="lbl">Support Spacing</span><span class="val" id="sB">50 cm</span></div>
-      <div class="sum-row"><span class="lbl">Supports</span><span class="val" id="sN">1</span></div>
-    </div>
-  </div>
-
-  <!-- Top-Right: Top Plan -->
-  <div class="quarter" id="qTop">
-    <div class="q-title">Top Plan</div>
-    <div class="q-content" id="svgTop"></div>
-  </div>
-
-  <!-- Bottom-Left: Side Elevation (Swapped) -->
-  <div class="quarter" id="qFront">
-    <div class="q-title">Side Elevation</div>
-    <div class="q-content" id="svgFront"></div>
-  </div>
-
-  <!-- Bottom-Right: Front Elevation (Swapped) -->
-  <div class="quarter" id="qSide">
-    <div class="q-title">Front Elevation</div>
-    <div class="q-content" id="svgSide"></div>
-  </div>
-
-</div>
-
-<script>
-const NS='http://www.w3.org/2000/svg';
-
-const benchDepth = 40;
-const benchHeight = 45;
-const seatThickness = 10;
-const legCapH = 10;
-const braceHeight = benchHeight - seatThickness - legCapH * 2; // 19cm
-
-// New constants for armrests
-const armrestHeight = 10; // cm - height of the block itself
-const armrestGap = 10; // cm - gap between seat and block
-const armrestWidthFront = 10; // cm
-
-let state = { width: 100 };
-
-function nSup(w) {
-  return Math.max(0, Math.floor(w / 50) - 1);
-}
-
-function bayW(w) {
-  const n = nSup(w);
-  return n > 0 ? w / (n + 1) : w;
-}
-
-function E(tag, a) {
-  const e = document.createElementNS(NS, tag);
-  for (const [k, v] of Object.entries(a || {})) e.setAttribute(k, v);
-  return e;
-}
-
-
-
-// Draw X-bracing for legs (spans full block height)
-function drawLegBracing(svg, x, y, w, h) {
-  svg.appendChild(E('line', { x1: x, y1: y, x2: x + w, y2: y + h, class: 'plan-leg-brace' }));
-  svg.appendChild(E('line', { x1: x + w, y1: y, x2: x, y2: y + h, class: 'plan-leg-brace' }));
-  const midX = x + w / 2;
-  svg.appendChild(E('line', { x1: x + w * 0.25, y1: y, x2: x + w * 0.75, y2: y + h, class: 'plan-leg-brace' }));
-  svg.appendChild(E('line', { x1: x + w * 0.75, y1: y, x2: x + w * 0.25, y2: y + h, class: 'plan-leg-brace' }));
-}
-
-// Draw top view with wood grain texture
-function drawWoodGrain(svg, x, y, w, h, s) {
-  for (let i = 0; i < 12; i++) {
-    const gy = y + (h / 12) * i + h / 24;
-    svg.appendChild(E('path', {
-      d: `M${x} ${gy} Q${x + w * 0.3} ${gy - 1}, ${x + w * 0.5} ${gy + 1} Q${x + w * 0.7} ${gy + 2}, ${x + w} ${gy}`,
-      class: 'plan-wood-grain'
-    }));
-  }
-}
-
-// ─── TOP VIEW ───
-function drawTop() {
-  const svg = E('svg', { xmlns: NS, 'shape-rendering': 'geometricPrecision' });
-  
-  const totalH = benchHeight + armrestGap + armrestHeight;
-  const maxDim = Math.max(state.width, benchDepth, totalH);
-  
-  // FIX: Use a fixed scale factor s=50 for consistent sizing across views.
-  const s = 50;
-  
-  // Calculate bench dimensions in SVG units
-  const bw = state.width * s;
-  const bd = benchDepth * s;
-  const totalH_px = totalH * s;
-  
-  // Add padding to ensure the bench is centered and doesn't clip
-  const padX = 2000; // 40 units horizontal padding
-  const padY = 2000; // 40 units vertical padding
-  
-  // Calculate viewBox dimensions
-  const vw = bw + padX * 2;
-  const vh = bd + padY * 2; // Top view is based on depth
-  
-  svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
-  svg.appendChild(E('rect', { x: 0, y: 0, width: vw, height: vh, fill: '#ffffff' }));
-
-  // Center the bench
-  const cx = (vw - bw) / 2;
-  const cy = (vh - bd) / 2;
-
-  svg.appendChild(E('rect', { x: cx, y: cy, width: bw, height: bd, class: 'plan-seat' }));
-  drawWoodGrain(svg, cx, cy, bw, bd, s);
-
-  const n = nSup(state.width);
-  const bayPx = bw / (n + 1);
-  
-  const capSize = 12 * s;
-  const legPositions = [cx, cx + bw - capSize];
-  
-  for (let i = 0; i < n; i++) {
-    legPositions.push(cx + bayPx * (i + 1) - capSize / 2);
-  }
-  
-  legPositions.forEach(lx => {
-    svg.appendChild(E('rect', { 
-      x: lx, y: cy, width: capSize, height: bd, 
-      class: 'plan-leg-cap' 
-    }));
-  });
-
-  for (let i = 0; i < n; i++) {
-    const px = cx + bayPx * (i + 1);
-    svg.appendChild(E('line', { x1: px, y1: cy, x2: px, y2: cy + bd, class: 'plan-sup' }));
-    svg.appendChild(E('circle', { cx: px, cy: cy, r: 2.5, class: 'plan-fill-sup' }));
-    svg.appendChild(E('circle', { cx: px, cy: cy + bd, r: 2.5, class: 'plan-fill-sup' }));
-  }
-
-  [[cx, cy], [cx + bw, cy], [cx, cy + bd], [cx + bw, cy + bd]].forEach(([x, y]) => {
-    svg.appendChild(E('circle', { cx: x, cy: y, r: 1.2, class: 'plan-corner' }));
-  });
-
-  svg.appendChild(E('line', { x1: cx, y1: cy + bd + 10, x2: cx + bw, y2: cy + bd + 10, class: 'plan-section-line' }));
-
-  const lbl = E('text', { x: vw - 12, y: vh - 12, class: 'plan-label', 'text-anchor': 'end' });
-  lbl.textContent = 'TOP PLAN';
-  svg.appendChild(lbl);
-
-  return svg;
-}
-
-// ─── FRONT VIEW ───
-function drawFront() {
-  const svg = E('svg', { xmlns: NS, 'shape-rendering': 'geometricPrecision' });
-  
-  const totalH = benchHeight + armrestGap + armrestHeight;
-  const maxDim = Math.max(state.width, benchDepth, totalH);
-  
-  // FIX: Use the same fixed scale factor s=50.
-  const s = 50;
-  
-  // Calculate bench dimensions in SVG units
-  const bw = state.width * s;
-  const bd = benchDepth * s;
-  const totalH_px = totalH * s;
-  const seatH = seatThickness * s;
-  const legH = (benchHeight - seatThickness - legCapH) * s;
-  const capH = legCapH * s;
-  
-  // Add padding to ensure the bench is centered and doesn't clip
-  const padX = 2000; // 40 units horizontal padding
-  const padY = 2000; // 40 units vertical padding
-  
-  // Calculate viewBox dimensions
-  // Front view width is same as Top view width
-  const vw = bw + padX * 2;
-  // Front view height is based on total height
-  const vh = totalH_px + padY * 2;
-  
-  svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
-  svg.appendChild(E('rect', { x: 0, y: 0, width: vw, height: vh, fill: '#ffffff' }));
-
-  // Center the bench
-  const cx = (vw - bw) / 2;
-  const cy = (vh - totalH_px) / 2;
-
-  svg.appendChild(E('rect', { x: cx, y: cy, width: bw, height: seatH, class: 'plan-seat' }));
-
-  const n = nSup(state.width);
-  const bayPx = bw / (n + 1);
-  
-  const legWidth = 10 * s;
-  const legPositions = [cx, cx + bw - legWidth];
-  
-  for (let i = 0; i < n; i++) {
-    legPositions.push(cx + bayPx * (i + 1) - legWidth / 2);
-  }
-
-  legPositions.forEach(lx => {
-    drawLegBracing(svg, lx, cy + seatH, legWidth, legH);
-    svg.appendChild(E('rect', { 
-      x: lx, y: cy + seatH + legH, width: legWidth, height: capH, 
-      class: 'plan-leg-cap' 
-    }));
-  });
-
-  const armrestW = armrestWidthFront * s;
-  const armrestH_px = armrestHeight * s;
-  const armrestGapPx = armrestGap * s;
-  
-  const lx_left = cx;
-  const lx_right = cx + bw - armrestW;
-  const armrestY = cy - armrestGapPx * 2;
-  
-  svg.appendChild(E('rect', { 
-    x: lx_left, y: armrestY, width: armrestW, height: armrestH_px, 
-    class: 'plan-leg-cap' 
-  }));
-  drawLegBracing(svg, lx_left, cy, armrestW, -armrestGapPx);
-
-  svg.appendChild(E('rect', { 
-    x: lx_right, y: armrestY, width: armrestW, height: armrestH_px, 
-    class: 'plan-leg-cap' 
-  }));
-  drawLegBracing(svg, lx_right, cy, armrestW, -armrestGapPx);
-
-  const objectTopY = armrestY;
-  const objectBottomY = cy + seatH + legH + capH;
-  
-
-
-  const lbl = E('text', { x: vw - 12, y: vh - 12, class: 'plan-label', 'text-anchor': 'end' });
-  lbl.textContent = 'FRONT ELEVATION';
-  svg.appendChild(lbl);
-
-  return svg;
-}
-
-// ─── SIDE VIEW ───
-function drawSide() {
-  const svg = E('svg', { xmlns: NS, 'shape-rendering': 'geometricPrecision' });
-  
-  const totalH = benchHeight + armrestGap + armrestHeight;
-  const maxDim = Math.max(state.width, benchDepth, totalH);
-  
-  // FIX: Use the same fixed scale factor s=50.
-  const s = 50;
-  
-  // Calculate bench dimensions in SVG units
-  const bw = state.width * s;
-  const bd = benchDepth * s;
-  const totalH_px = totalH * s;
-  const seatH = seatThickness * s;
-  const legH = (benchHeight - seatThickness - legCapH) * s;
-  const capH = legCapH * s;
-  
-  // Add padding to ensure the bench is centered and doesn't clip
-  const padX = 2000; // 40 units horizontal padding
-  const padY = 2000; // 40 units vertical padding
-  
-  // Calculate viewBox dimensions
-  // Side view width is based on depth
-  const vw = bd + padX * 2;
-  // Side view height is based on total height
-  const vh = totalH_px + padY * 2;
-  
-  svg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
-  svg.appendChild(E('rect', { x: 0, y: 0, width: vw, height: vh, fill: '#ffffff' }));
-
-  // Center the bench
-  const bx = (vw - bd) / 2;
-  const cy = (vh - totalH_px) / 2;
-
-  svg.appendChild(E('rect', { x: bx, y: cy, width: bd, height: seatH, class: 'plan-seat' }));
-
-  drawLegBracing(svg, bx, cy + seatH, bd, legH);
-  
-  svg.appendChild(E('rect', { 
-    x: bx, y: cy + seatH + legH, width: bd, height: capH, 
-    class: 'plan-leg-cap' 
-  }));
-
-  const armrestH_px = armrestHeight * s;
-  const armrestGapPx = armrestGap * s;
-  const armrestY = cy - armrestGapPx * 2;
-  
-  svg.appendChild(E('rect', { 
-    x: bx, y: armrestY, width: bd, height: armrestH_px, 
-    class: 'plan-leg-cap' 
-  }));
-  drawLegBracing(svg, bx, cy, bd, -armrestGapPx);
-
-  const objectTopY = armrestY;
-  const objectBottomY = cy + seatH + legH + capH;
-
-
-  const lbl = E('text', { x: vw - 12, y: vh - 12, class: 'plan-label', 'text-anchor': 'end' });
-  lbl.textContent = 'SIDE ELEVATION';
-  svg.appendChild(lbl);
-
-  return svg;
-}
-
-// ─── Update ───
-function update() {
-  try {
-    const w = state.width;
-    const n = nSup(w);
-    const b = bayW(w);
-
-    document.getElementById('widthNum').textContent = w;
-    document.getElementById('sW').textContent = w + ' cm';
-    document.getElementById('sD').textContent = benchDepth + ' cm';
-    document.getElementById('sH').textContent = benchHeight + ' cm';
-    document.getElementById('sS').textContent = Math.max(1, n);
-    document.getElementById('sT').textContent = w + ' cm';
-    document.getElementById('sB').textContent = n === 0 ? '—' : b + ' cm';
-    document.getElementById('sN').textContent = n;
-
-    document.getElementById('svgTop').innerHTML = '';
-    document.getElementById('svgTop').appendChild(drawTop());
-
-    document.getElementById('svgFront').innerHTML = '';
-    document.getElementById('svgFront').appendChild(drawSide());
-
-    document.getElementById('svgSide').innerHTML = '';
-    document.getElementById('svgSide').appendChild(drawFront());
-  } catch (err) {
-    console.error('Bench Configurator Error:', err);
-  }
-}
-
-// ─── Events ───
-document.getElementById('widthSlider').addEventListener('input', e => {
-  state.width = +e.target.value;
-  update();
-});
-
-update();
-</script>
 </body>
 </html>
