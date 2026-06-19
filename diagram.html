@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dissection of Music Video Industry</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+  	--info-bar-h: 40px;
+  	
+    --bg:              #262626;
+    --border:          #575756;
+    --col-head:        #666666;
+
+    --node-def:        #f0f0f0;
+    --node-sub:        #b8b8b8;
+
+    --node-active:     #f0f0f0;
+    --node-sub-active: #b8b8b8;
+
+    --node-conn:       #c7c7c7;
+    --node-sub-conn:   #8f8f8f;
+
+    --node-dim:        #3a3a3a;
+    --node-sub-dim:    #2f2f2f;
+
+    --dot-active:      #f0f0f0;
+    --dot-conn:        #8f8f8f;
+
+    --line-bright:     rgba(235,235,235,0.88);
+    --line-dim:        rgba(0, 0, 0, 0);
+
+    --info-text:       #7a7a7a;
+    --info-accent:     #d5d5d5;
+
+    --section-border:  #3a3a3a;
+    --section-text:    #5d5d5d;
+    --section-bg:      rgba(255,255,255,0.018);
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--node-def);
+    font-family: 'IBM Plex Mono', 'Menlo', 'Courier New', Courier, monospace;
+    min-height: 100vh;
+    overscroll-behavior: none;
+  }
+
+  #app {
+    max-width: 1600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #info-bar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--bg);
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    height: var(--info-bar-h);
+    padding: 0 20px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--info-text);
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+  }
+
+  #info-label { transition: color 0.2s; }
+  #info-label span { color: var(--info-accent); }
+
+  #clear-btn, #back-btn {
+    font-family: 'IBM Plex Mono', 'Menlo', 'Courier New', Courier, monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--info-text);
+    background: none;
+    border: 1px solid #4a4a4a;
+    padding: 3px 10px 2px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #clear-btn:hover, #back-btn:hover { color: #d0d0d0; border-color: #777; background: rgba(255,255,255,0.03); }
+
+  #diagram-wrap {
+    position: relative;
+    flex: 1;
+    padding-bottom: var(--info-bar-h);
+  }
+
+  #diagram {
+    display: grid;
+    grid-template-columns: 1.3fr 1.8fr 1.6fr 1.3fr;
+    position: relative;
+  }
+
+  .column {
+    border-right: 0.5px solid var(--border);
+    padding-bottom: 48px;
+    min-width: 0;
+  }
+  .column:last-child { border-right: none; }
+
+  #list-producer,
+  #list-project,
+  #list-software,
+  #list-developer {
+    padding: 0 40px;
+  }
+
+  .col-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: var(--info-bar-h);
+    z-index: 100;
+    background: var(--bg);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--col-head);
+    padding: 13px 52px 9px;
+    margin-bottom: 4px;
+  }
+
+  .section-group {
+    margin: 8px 12px 6px;
+    border: 1px dashed var(--section-border);
+    border-radius: 1px;
+    background: var(--section-bg);
+  }
+
+  .section-label {
+    font-size: 7.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--section-text);
+    padding: 6px 10px 3px;
+  }
+
+  .node {
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.18s;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  .node:hover { background: rgba(255,255,255,0.02); }
+
+  .node-name {
+    font-size: 10px;
+    color: var(--node-def);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.65;
+    -webkit-transition: color 0.22s;
+    transition: color 0.22s;
+    font-weight: 400;
+  }
+  .node-meta {
+    font-size: 8px;
+    color: var(--node-sub);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    -webkit-transition: color 0.22s;
+    transition: color 0.22s;
+    font-weight: 300;
+  }
+
+  @-webkit-keyframes activateNode {
+    0%   { background: rgba(255,255,255,0.0); }
+    35%  { background: rgba(255,255,255,0.14); }
+    100% { background: rgba(255,255,255,0.055); }
+  }
+  @keyframes activateNode {
+    0%   { background: rgba(255,255,255,0.0); }
+    35%  { background: rgba(255,255,255,0.14); }
+    100% { background: rgba(255,255,255,0.055); }
+  }
+
+  .node.active {
+    -webkit-animation: activateNode 0.55s ease-out forwards;
+    animation: activateNode 0.55s ease-out forwards;
+  }
+  .node.active .node-name   { color: var(--node-active); }
+  .node.active .node-meta   { color: var(--node-sub-active); }
+  .node.active::before      { opacity: 1; background: var(--dot-active); }
+
+  @-webkit-keyframes connectNode {
+    0%   { background: rgba(255,255,255,0.0); }
+    55%  { background: rgba(255,255,255,0.035); }
+    100% { background: rgba(255,255,255,0.02); }
+  }
+  @keyframes connectNode {
+    0%   { background: rgba(255,255,255,0.0); }
+    55%  { background: rgba(255,255,255,0.035); }
+    100% { background: rgba(255,255,255,0.02); }
+  }
+
+  .node.connected {
+    -webkit-animation: connectNode 0.4s ease-out forwards;
+    animation: connectNode 0.4s ease-out forwards;
+  }
+  .node.connected .node-name { color: var(--node-conn); }
+  .node.connected .node-meta { color: var(--node-sub-conn); }
+  .node.connected::before    { opacity: 1; }
+
+  .node.dimmed .node-name { color: var(--node-dim); }
+  .node.dimmed .node-meta { color: var(--node-sub-dim); }
+
+  .node.uncertain .node-name::after {
+    content: ' ~';
+    color: #8a8a8a;
+  }
+
+  #svg-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .conn-line {
+    fill: none;
+    stroke: var(--line-bright);
+    stroke-width: 1.05px;
+    opacity: 0;
+    stroke-linecap: round;
+  }
+
+  /* ── Bottom bar ── */
+  #bottom-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: var(--bg);
+    border-top: 0.5px solid var(--border);
+    height: var(--info-bar-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  #open-diagram-btn {
+    font-family: 'IBM Plex Mono', 'Menlo', 'Courier New', Courier, monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--info-text);
+    background: none;
+    border: 1px solid #4a4a4a;
+    padding: 3px 10px 2px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  #open-diagram-btn:hover {
+    color: #d0d0d0;
+    border-color: #777;
+    background: rgba(255,255,255,0.03);
+  }
+  #pdf-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--bg);
+    flex-direction: column;
+  }
+  #pdf-overlay.open { display: flex; }
+  #pdf-topbar {
+    flex-shrink: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg);
+  }
+  #pdf-topbar-title {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--info-text);
+  }
+  #pdf-controls { display: flex; align-items: center; gap: 8px; }
+  .pdf-ctrl-btn {
+    font-family: 'IBM Plex Mono', 'Menlo', 'Courier New', Courier, monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #7a7a7a;
+    background: none;
+    border: 1px solid #4a4a4a;
+    padding: 3px 10px 2px;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: color 0.15s, border-color 0.15s;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .pdf-ctrl-btn:hover { color: #d0d0d0; border-color: #666; }
+  #pdf-zoom-label {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--info-text);
+    min-width: 38px;
+    text-align: center;
+    user-select: none;
+  }
+  #pdf-viewport {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+  }
+  #pdf-viewport.dragging { cursor: grabbing; }
+  #pdf-canvas-wrap {
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+    line-height: 0;
+  }
+  #pdf-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--info-text);
+    text-transform: uppercase;
+  }
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="info-bar">
+    <a id="back-btn" href="https://jaanvanrompaey.be/EVI.html">&#8592; E.V.I</a>
+    <div> CLICK ANY CARD TO HIGHLIGHT CONNECTIONS </div>
+    <button id="clear-btn" onclick="clearSelection()">CLEAR</button>
+  </div>
+
+  <div id="diagram-wrap">
+    <div id="diagram">
+      <div class="column">
+        <div class="col-header">Producer</div>
+        <div id="list-producer"></div>
+      </div>
+      <div class="column">
+        <div class="col-header">Project</div>
+        <div id="list-project"></div>
+      </div>
+      <div class="column">
+        <div class="col-header">Software</div>
+        <div id="list-software"></div>
+      </div>
+      <div class="column">
+        <div class="col-header">Developer</div>
+        <div id="list-developer"></div>
+      </div>
+    </div>
+    <svg id="svg-overlay"></svg>
+  </div>
+</div>
+
+<!-- Bottom bar -->
+<div id="bottom-bar">
+  <button id="open-diagram-btn" onclick="openPdfViewer()">Open Diagram</button>
+</div>
+
+<!-- Diagram overlay -->
+<div id="pdf-overlay">
+  <div id="pdf-topbar">
+    <span id="pdf-topbar-title">Dissection of the Industry Behind Music Videos</span>
+    <div id="pdf-controls">
+      <button class="pdf-ctrl-btn" onclick="pdfZoom(-0.25)">&#8722;</button>
+      <span id="pdf-zoom-label">100%</span>
+      <button class="pdf-ctrl-btn" onclick="pdfZoom(0.25)">+</button>
+      <button class="pdf-ctrl-btn" onclick="pdfFit()">Fit</button>
+      <button class="pdf-ctrl-btn" onclick="closePdfViewer()">Close</button>
+    </div>
+  </div>
+  <div id="pdf-viewport">
+    <div id="pdf-loading">Loading diagram&#8230;</div>
+    <div id="pdf-canvas-wrap"></div>
+  </div>
+</div>
+
+<script src="./src/diagram.js"></script>
+<script src="./src/viewer.js"></script>
+</body>
+</html>
