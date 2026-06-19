@@ -327,11 +327,23 @@ touch-action: manipulation;
   .prev, .next { top: 45%; font-size: 22px; padding: 14px; margin-top: 0; z-index: 2002; }
   .prev { left: 15px; } .next { right: 15px; }
 
-  /* FIXED: Prevents text/images from spilling off the right edge */
+  /* FIXED: Thumbnails now scale dynamically to fit in a single row */
+  .project-thumbnails {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+  }
+  .thumb-box {
+    flex: 1 1 0;          /* Grow & shrink equally to fill space */
+    width: auto;         /* Override desktop fixed width */
+    height: auto;        /* Override desktop fixed height */
+    aspect-ratio: 3 / 2; /* Maintain original 200x140 proportions */
+    min-width: 80px;     /* Prevent them from becoming unreadable */
+  }
   .project-main-image, .thumb-box { max-width: 100%; }
-  .thumb-box { width: 100%; max-width: 150px; }
-  .project-thumbnails { flex-wrap: wrap; justify-content: center; gap: 10px; }
 }
+
 
 </style>
 </head>
