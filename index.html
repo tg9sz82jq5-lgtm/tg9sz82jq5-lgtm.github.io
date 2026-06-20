@@ -61,6 +61,7 @@ html, body {
 position: fixed; top: 0; left: 0; width: 100%;
 height: var(--header-height);
 background-color: var(--header-bg);
+border-bottom: 1px solid var(--line-color);
 display: flex; justify-content: space-between; align-items: center;
 padding: 0 40px; z-index: 100;
 }
@@ -103,7 +104,7 @@ scrollbar-width: thin; scrollbar-color: #333 transparent;
 /* =========================================
    4. LEFT COLUMN (Projects)
    ========================================= */
-.col-left { border-top: 1px solid var(--line-color); border-right: 1px solid var(--line-color); }
+.col-left { border-right: 1px solid var(--line-color); }
 
 .project-list {
 list-style: none; padding: 0;
@@ -111,10 +112,7 @@ display: flex; flex-direction: column; gap: 80px;
 }
 
 /* =========================================
-   DESKTOP: project-block is a 2-column grid
-   ───────────────────────────────────────────
-   Column 1 (order: 1) = text elements
-   Column 2 (order: 2) = image elements
+   DESKTOP: 2-Column Grid Layout
    ========================================= */
 .project-block {
 display: grid;
@@ -123,36 +121,42 @@ gap: 40px;
 margin-bottom: 80px;
 }
 
-/* Desktop: text elements go to the left column */
-.project-header {
+/* Desktop: Text goes to the left column (order 1) */
+.text-column {
   grid-column: 1;
   grid-row: 1;
-  margin-bottom: 10px;
-}
-.project-credits {
-  grid-column: 1;
-  grid-row: 2;
-}
-.project-description {
-  grid-column: 1;
-  grid-row: 3;
-}
-/* Desktop: image column goes to the right */
-.image-column {
-  grid-column: 2;
-  grid-row: 1 / span 3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Mobile defaults: single column, natural HTML order
-   header → images → credits → description */
+/* Desktop: Images go to the right column (order 2) */
+.image-column {
+  grid-column: 2;
+  grid-row: 1 / span 3; /* Span all text rows */
+}
+
+/* Mobile: Single Column (Natural Order) */
+@media (max-width: 900px) {
+  .project-block {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .text-column {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .image-column {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
 
 .project-header { margin-bottom: 10px; }
 .project-title { font-size: 16px; font-weight: 500; text-transform: uppercase; }
 .project-date { font-size: 12px; color: var(--text-muted); }
 .project-credits { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
 .project-description { font-size: 14px; line-height: 1.6; color: var(--text-description); }
-
-.image-column { display: flex; flex-direction: column; gap: 20px; }
 
 .project-main-image {
 width: 100%;
@@ -336,19 +340,6 @@ touch-action: manipulation;
   .layout-container { grid-template-columns: 1fr; height: auto; overflow: visible; min-height: 100dvh; }
   .column { height: auto; overflow: visible; border: none; }
 
-  /* Mobile: single column, natural order (header → images → credits → description) */
-  .project-block {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .project-header,
-  .image-column,
-  .project-credits,
-  .project-description {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
   .lightbox-iframe-wrapper { width: 95vw; max-width: 100%; }
   .lightbox { align-items: center; justify-content: center; padding-top: 0; }
   .lightbox-content { max-width: 95%; max-height: 85vh; }
@@ -410,9 +401,21 @@ touch-action: manipulation;
 
 <!-- Project 1 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">E.V.I. (Experimental Video Interface)</div>
-    <div class="project-date">June 16, 2026</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">E.V.I. (Experimental Video Interface)</div>
+      <div class="project-date">June 16, 2026</div>
+    </div>
+    <div class="project-credits">
+      <p>Featured in the exhibition "Death of the Music Video(?)"</p>
+      <p>Semester-long project</p>
+      <p>Tags: Intervention, Experimental, Hardware</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Experimental Video Interface takes the position of an intervention in the music video industry. The interface consists out of multiple components chained together in a modular setup. These are made to explore the ambiguity of electrical signals used to transfer sound and image. It takes inspiration from dub music, which uses a mixing board like an instrument and revolves around reworking existing music. It is made to bring the personality and emotions of music to a frictionless video editing industry. All components and research are open-sourced through the website found below.</p>
+      <p>Created within the brief "Death of the Music Video(?)" of Studio Digital Native at Design Academy Eindhoven, where students deconstruct the music video format, understanding it as a portal to today's digital worlds. </p>
+      <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.be/EVI.html', '_blank')">E.V.I. Website</button>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image">
@@ -428,23 +431,24 @@ touch-action: manipulation;
       </div>
     </div>
   </div>
-  <div class="project-credits">
-    <p>Featured in the exhibition "Death of the Music Video(?)"</p>
-    <p>Semester-long project</p>
-    <p>Tags: Intervention, Experimental, Hardware</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Experimental Video Interface takes the position of an intervention in the music video industry. The interface consists out of multiple components chained together in a modular setup. These are made to explore the ambiguity of electrical signals used to transfer sound and image. It takes inspiration from dub music, which uses a mixing board like an instrument and revolves around reworking existing music. It is made to bring the personality and emotions of music to a frictionless video editing industry. All components and research are open-sourced through the website found below.</p>
-    <p>Created within the brief "Death of the Music Video(?)" of Studio Digital Native at Design Academy Eindhoven, where students deconstruct the music video format, understanding it as a portal to today's digital worlds. </p>
-    <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.be/EVI.html', '_blank')">E.V.I. Website</button>
-  </div>
 </li>
 
 <!-- Project 2 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">Techno-Exponentialism Existentialism</div>
-    <div class="project-date">March 9, 2026</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">Techno-Exponentialism Existentialism</div>
+      <div class="project-date">March 9, 2026</div>
+    </div>
+    <div class="project-credits">
+      <p>Collaborated with: Yunseo Cha, Lilly Van Bakel</p>
+      <p>3-week-long project</p>
+      <p>Tags: Datamoshing, Command-Line Video Editing, Music Video</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Techno-Exponentialism, founded in Moore's Law, has been transforming the way we interact with our resources. It becomes ever more extractionist, often at the expense of our nature and well-being. The music video Techno-Exponentialism Existentialism explores these themes by exploring the exponential development of technology, becoming more and more dissonant, yet intriguing.</p>
+      <p>Created as a kick-off assignment within Studio Digital Native at Design Academy Eindhoven, where students analyze one of the most influencial music videos, using it as inspiration for a contemporary approach to music videos.</p>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image" data-vimeo-url="https://player.vimeo.com/video/1202569985">
@@ -456,22 +460,23 @@ touch-action: manipulation;
       <div class="thumb-box"><img src="tee-3.png" alt="Extract 3"></div>
     </div>
   </div>
-  <div class="project-credits">
-    <p>Collaborated with: Yunseo Cha, Lilly Van Bakel</p>
-    <p>3-week-long project</p>
-    <p>Tags: Datamoshing, Command-Line Video Editing, Music Video</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Techno-Exponentialism, founded in Moore's Law, has been transforming the way we interact with our resources. It becomes ever more extractionist, often at the expense of our nature and well-being. The music video Techno-Exponentialism Existentialism explores these themes by exploring the exponential development of technology, becoming more and more dissonant, yet intriguing.</p>
-    <p>Created as a kick-off assignment within Studio Digital Native at Design Academy Eindhoven, where students analyze one of the most influencial music videos, using it as inspiration for a contemporary approach to music videos.</p>
-  </div>
 </li>
 
 <!-- Project 3 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">Raisin</div>
-    <div class="project-date">June 18, 2026</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">Raisin</div>
+      <div class="project-date">June 18, 2026</div>
+    </div>
+    <div class="project-credits">
+      <p>Semester-long project</p>
+      <p>Tags: Decorative, Furniture, Visual Research</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Raisin is a vase that was founded by natural processes. It got inspired by dried up grape branches, which got dissected through form and color research.</p>
+      <p>Created in Studio Thinking Hands at Design Academy Eindhoven. The studio teaches students how to enhance and build an inquisitive and intellectual mind with making and crafting as a part of the design process.</p>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image">
@@ -482,21 +487,24 @@ touch-action: manipulation;
       <div class="thumb-box"><img src="grape-study.jpg" alt="Process 2"></div>
     </div>
   </div>
-  <div class="project-credits">
-    <p>Semester-long project</p>
-    <p>Tags: Decorative, Furniture, Visual Research</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Raisin is a vase that was founded by natural processes. It got inspired by dried up grape branches, which got dissected through form and color research.</p>
-    <p>Created in Studio Thinking Hands at Design Academy Eindhoven. The studio teaches students how to enhance and build an inquisitive and intellectual mind with making and crafting as a part of the design process.</p>
-  </div>
 </li>
 
 <!-- Project 4 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">Living Structures</div>
-    <div class="project-date">June 23, 2025</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">Living Structures</div>
+      <div class="project-date">June 23, 2025</div>
+    </div>
+    <div class="project-credits">
+      <p>Semester-long project</p>
+      <p>Tags: System, Interior, Modular</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Living Structures explores the way our society interacts with objects. It dissects how form language can be limiting our creativity, creating stale interactions with our environment. As a reaction on this, it is a modular system that consists our of different levels, acting as benches, tables, chairs, ... It is accompanied by a modular building website.</p>
+      <p>Made within the 'Fascination Project' module of Design Academy Eindhoven, where students explore their own interests and are encouraged to develop their own design language.</p>
+      <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.github.io/livingstructures/index.html', '_blank')">Structure builder</button>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image">
@@ -508,22 +516,25 @@ touch-action: manipulation;
       <div class="thumb-box"><img src="ls-3.jpg" alt="Pose 3"></div>
     </div>
   </div>
-  <div class="project-credits">
-    <p>Semester-long project</p>
-    <p>Tags: System, Interior, Modular</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Living Structures explores the way our society interacts with objects. It dissects how form language can be limiting our creativity, creating stale interactions with our environment. As a reaction on this, it is a modular system that consists our of different levels, acting as benches, tables, chairs, ... It is accompanied by a modular building website.</p>
-    <p>Made within the 'Fascination Project' module of Design Academy Eindhoven, where students explore their own interests and are encouraged to develop their own design language.</p>
-    <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.github.io/livingstructures/index.html', '_blank')">Structure builder</button>
-  </div>
 </li>
 
 <!-- Project 5 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">Connecting Heritage</div>
-    <div class="project-date">June 18, 2026</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">Connecting Heritage</div>
+      <div class="project-date">June 18, 2026</div>
+    </div>
+    <div class="project-credits">
+      <p>Semester-long project</p>
+      <p>Tags: System, Product Proposition, Repurposing</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Connecting Heritage is a modular outdoor bench system for UNESCO heritage sites. It aims to be placed at heritage sites that recently broke down, and is in the process of being restored. For the restoration, UNESCO aims to involve the local community of craftspeople and engineers to realise it. The structure exists mostly out of concrete, wherein remaining rubble of a broken heritage site is mixed. It creates a bench that is fully emerged in this site, and connects the community around this site.</p>
+      <p>Rather than creating a finished product, Connecting Heritage is a website that gives measurements to local engineers. This way, different views on craft and architecture can be implemented, depending on the heritage sites. Still, some examples of the bench in context are given.</p>
+      <p>Created in 'A hands-on Design Lab', a course at Design Academy Eindhoven, where students dissect a certain material or production method, and create a concept to pitch to a chosen client.</p>
+      <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.github.io/connectingheritage.html', '_blank')">Configuration Website</button>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image">
@@ -535,23 +546,24 @@ touch-action: manipulation;
       <div class="thumb-box"><img src="ch-3.jpeg" alt="Example 3"></div>
     </div>
   </div>
-  <div class="project-credits">
-    <p>Semester-long project</p>
-    <p>Tags: System, Product Proposition, Repurposing</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Connecting Heritage is a modular outdoor bench system for UNESCO heritage sites. It aims to be placed at heritage sites that recently broke down, and is in the process of being restored. For the restoration, UNESCO aims to involve the local community of craftspeople and engineers to realise it. The structure exists mostly out of concrete, wherein remaining rubble of a broken heritage site is mixed. It creates a bench that is fully emerged in this site, and connects the community around this site.</p>
-    <p>Rather than creating a finished product, Connecting Heritage is a website that gives measurements to local engineers. This way, different views on craft and architecture can be implemented, depending on the heritage sites. Still, some examples of the bench in context are given.</p>
-    <p>Created in 'A hands-on Design Lab', a course at Design Academy Eindhoven, where students dissect a certain material or production method, and create a concept to pitch to a chosen client.</p>
-    <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://jaanvanrompaey.github.io/connectingheritage.html', '_blank')">Configuration Website</button>
-  </div>
 </li>
 
 <!-- Project 6 -->
 <li class="project-block">
-  <div class="project-header">
-    <div class="project-title">Have a Great Day!</div>
-    <div class="project-date">June 23, 2025</div>
+  <div class="text-column">
+    <div class="project-header">
+      <div class="project-title">Have a Great Day!</div>
+      <div class="project-date">June 23, 2025</div>
+    </div>
+    <div class="project-credits">
+      <p>Semester-long project</p>
+      <p>Tags: Intervention, Graphic Design, Activism</p>
+    </div>
+    <div class="project-description">
+      <p>[...] Have a Great Day is a series of posters and stickers made to raise your voice. These posters were designed to confront people with the different languages within Brussels. It strives for inclusivity between the communities. This is done by teaching words of kindness from one to another spoken language. The context in which the posters were hung up is equally important. It is hung in places where these institutionalized languages are visible, and where there needs more acceptance to other languages. The stickers were made to give people a voice. They represent each community and which language they speak. The posters and stickers can be obtained for free and hung around the city, to give space for each language.  This way, the city becomes more of a mutual ground between these languages, and people who see them feel more welcomed.</p>
+      <p>Created within the semester topic of 'Friction' at Studio Technogeographies of Design Academy Eindhoven. The studio is a theoretical and practical laboratory placing design and designers as active agents for imagining potential future scenarios inside our contemporary technogeographies.</p>
+      <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://www.dropbox.com/scl/fi/w2uo1edkp9jsnozbhi3dz/techno-posters-all.pdf?rlkey=3b85vz5jsi96oj3dep8dyu7vu&st=ilrry2kd&dl=0', '_blank')">Posters and Stickers</button>
+    </div>
   </div>
   <div class="image-column">
     <div class="project-main-image">
@@ -562,15 +574,6 @@ touch-action: manipulation;
       <div class="thumb-box"><img src="hagd-2.jpg" alt="Extract 2"></div>
       <div class="thumb-box"><img src="hagd-3.jpg" alt="Extract 3"></div>
     </div>
-  </div>
-  <div class="project-credits">
-    <p>Semester-long project</p>
-    <p>Tags: Intervention, Graphic Design, Activism</p>
-  </div>
-  <div class="project-description">
-    <p>[...] Have a Great Day is a series of posters and stickers made to raise your voice. These posters were designed to confront people with the different languages within Brussels. It strives for inclusivity between the communities. This is done by teaching words of kindness from one to another spoken language. The context in which the posters were hung up is equally important. It is hung in places where these institutionalized languages are visible, and where there needs more acceptance to other languages. The stickers were made to give people a voice. They represent each community and which language they speak. The posters and stickers can be obtained for free and hung around the city, to give space for each language.  This way, the city becomes more of a mutual ground between these languages, and people who see them feel more welcomed.</p>
-    <p>Created within the semester topic of 'Friction' at Studio Technogeographies of Design Academy Eindhoven. The studio is a theoretical and practical laboratory placing design and designers as active agents for imagining potential future scenarios inside our contemporary technogeographies.</p>
-    <button style="background-color: var(--bg-color); color: var(--text-description); border: 1px solid var(--text-description); border-radius: 0px; padding: 10px 20px; cursor: pointer; font-size: 12px;" onclick="window.open('https://www.dropbox.com/scl/fi/w2uo1edkp9jsnozbhi3dz/techno-posters-all.pdf?rlkey=3b85vz5jsi96oj3dep8dyu7vu&st=ilrry2kd&dl=0', '_blank')">Posters and Stickers</button>
   </div>
 </li>
 
